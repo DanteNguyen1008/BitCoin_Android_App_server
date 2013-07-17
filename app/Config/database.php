@@ -60,7 +60,7 @@ class DATABASE_CONFIG {
 		'host' => 'localhost',
 		'login' => 'root',
 		'password' => 'root',
-		'database' => 'kb_bitcoin_android_app_db',
+		'database' => 'kibow_sicbo_android',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);
@@ -69,9 +69,9 @@ class DATABASE_CONFIG {
 		'datasource' => 'Database/Mysql',
 		'persistent' => false,
 		'host' => 'localhost',
-		'login' => 'user',
-		'password' => 'password',
-		'database' => 'test_database_name',
+		'login' => 'root',
+		'password' => 'root',
+		'database' => 'kibow_sicbo_android',
 		'prefix' => '',
 		//'encoding' => 'utf8',
 	);

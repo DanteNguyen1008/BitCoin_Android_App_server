@@ -17,7 +17,15 @@ class User extends AppModel {
 	
 	public function insertUser($userData)
 	{
-		
+		$this->create($userData);
+		$this->save($userData);
 	}
-
+	
+	public function loginSelect($data) {
+		return $this->find('first',
+				    array( 'conditions' => array(
+				    		'User.email' => $data['User']['email'],
+				    		'User.password' => $data['User']['password']))
+				);
+	}
 }
