@@ -41,7 +41,9 @@ class UsersController extends AppController{
 		$response['task_title'] = $task_title;
 		$response['data']['message'] = $message;
 		if ($status == true) {
-		    $response['data']['balance'] = BALANCE_INIT;
+		    $response['data']['register']['user'] = $data['User'];
+		    unset($response['data']['register']['user']['password']);
+		    $response['data']['register']['credit']['balance'] = BALANCE_INIT;
 		}
 		$response['status'] = $status;
 		echo json_encode ( array('response' => $response) );
