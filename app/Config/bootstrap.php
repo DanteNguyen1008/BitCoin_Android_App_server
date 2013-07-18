@@ -107,3 +107,10 @@ CakeLog::config('error', array(
 	'types' => array('warning', 'error', 'critical', 'alert', 'emergency'),
 	'file' => 'error',
 ));
+
+
+/**
+ * Define CONSTANT
+ */
+defined('IS_DEBUG') || define('IS_DEBUG', true);
+defined('BALANCE_INIT') || define('BALANCE_INIT', 0);

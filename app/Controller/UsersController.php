@@ -1,25 +1,16 @@
 <?php
 class UsersController extends AppController{
 	
-	var  $helpers = array('Session');
-	
 	public function index()
 	{
 		$userData = $this->User->getUserByLogin('a1provip002@gmail.com','123456');
 		var_dump($userData);
 	}
 	
-	public function register() {
+	public function register($email, $password, $fullname, $phonenumber, $address) {
 		$task_title = 'res_sign_up';
 		$message = 'fail';
 		$status = false;
-		
-		// Get request data
-		$email = isset($_GET['email']) ? $_GET['email'] : '';
-		$password = isset($_GET['password']) ? $_GET['password'] : '';
-		$fullname = isset($_GET['fullname']) ? $_GET['fullname'] : '';
-		$phonenumber = isset($_GET['phonenumber']) ? $_GET['phonenumber'] : '';
-		$adress = isset($_GET['address']) ? $_GET['address'] : '';
 		
 		// Check valid input data
 		if ($email == '' || $password == '' || $fullname == '') {
@@ -31,33 +22,35 @@ class UsersController extends AppController{
 			$data['User']['password'] = md5($password);
 			$data['User']['fullname'] = $fullname;
 			$data['User']['phonenumber'] = $phonenumber;
-			$data['User']['address'] = $adress;
+			$data['User']['address'] = $address;
 			
-			$this->User->insertUser($data);
+			if ($this->User->isExist($data)) {
+			    $message = 'Email exist';
+			}
+			else {
+			    $this->User->insertUser($data);
+			    $message = 'Sign up success';
+			    $status = true;
+			}
 			
-			$message = 'Your change is success';
-			$status = true;
 		}
-		
 		
 		
 		// Process Json result 
 		$response = array();
 		$response['task_title'] = $task_title;
 		$response['data']['message'] = $message;
+		if ($status == true) {
+		    $response['data']['balance'] = BALANCE_INIT;
+		}
 		$response['status'] = $status;
 		echo json_encode ( array('response' => $response) );
 	}
 	
-	public function login() {
-		
+	public function login($email, $password) {
 		$task_title = 'res_log_in';
 		$message = 'fail';
 		$status = false;
-		
-		// Get request data
-		$email = isset($_GET['email']) ? $_GET['email'] : '';
-		$password = isset($_GET['password']) ? $_GET['password'] : '';
 		
 		// Check valid input data
 		if ($email == '' || $password == '') {
@@ -67,13 +60,17 @@ class UsersController extends AppController{
 			$data = array ();
 			$data['User']['email'] = $email;
 			$data['User']['password'] = md5($password);
-				
-			if ($this->User->loginSelect($data)) {
+
+			$loginSelect = $this->User->loginSelect($data);
+			if ($loginSelect) {
 				// Store session
-				$this->Session->write('login', $email);
+				CakeSession::write('login', $email);
 				
 				$message = 'Login success';
 				$status = true;
+			}
+			else {
+				$message = 'Email or password wrong';
 			}
 		}
 		
@@ -81,20 +78,21 @@ class UsersController extends AppController{
 		$response = array();
 		$response['task_title'] = $task_title;
 		$response['data']['message'] = $message;
+		if ($status == true) {
+		    $response['data']['login']['user'] = $loginSelect['User'];
+		    unset($response['data']['login']['user']['password']);
+		    $response['data']['login']['credit']['balance'] = $loginSelect['User']['balance'];
+		}
 		$response['status'] = $status;
-		echo json_encode ( array('response' => $response) );
+		return json_encode ( array('response' => $response) );
 	}
 	
-	public function changepassword() {
+	public function changepassword($old_password, $new_password) {
 		$task_title = 'res_change_pass';
 		$message = 'fail';
 		$status = false;
 		
-		// Get request data
-		$old_password = isset($_GET['old_password']) ? $_GET['old_password'] : '';
-		$new_password = isset($_GET['new_password']) ? $_GET['new_password'] : '';
-		
-		if (!$this->Session->check('login')) {
+		if (!CakeSession::check('login')) {
 			$message = 'Please login first';
 		}
 		else {
@@ -104,7 +102,7 @@ class UsersController extends AppController{
 			}
 			else {
 				$data = array ();
-				$data['User']['email'] = $this->Session->read('login');
+				$data['User']['email'] = CakeSession::read('login');
 				$data['User']['password'] = md5($old_password);
 			
 				$currentUser = $this->User->loginSelect($data);
@@ -132,6 +130,6 @@ class UsersController extends AppController{
 		$response['task_title'] = $task_title;
 		$response['data']['message'] = $message;
 		$response['status'] = $status;
-		echo json_encode ( array('response' => $response) );
+		return json_encode ( array('response' => $response) );
 	}
 }
