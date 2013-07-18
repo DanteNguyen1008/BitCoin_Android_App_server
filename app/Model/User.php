@@ -28,4 +28,11 @@ class User extends AppModel {
 				    		'User.password' => $data['User']['password']))
 				);
 	}
+	
+	public function isExist($data) {
+	    return $this->find('first',
+	                    array( 'conditions' => array(
+	                                    'User.email' => $data['User']['email']))
+	    );
+	}
 }

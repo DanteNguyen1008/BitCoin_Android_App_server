@@ -188,8 +188,12 @@
  *
  */
 	Configure::write('Session', array(
-		'defaults' => 'php'
-	));
+    'defaults' => 'php',
+        'ini' => array(
+            'session.gc_divisor' => 1000,
+            'session.cookie_httponly' => true
+        )
+    ));
 
 /**
  * A random string used in security hashing methods.
