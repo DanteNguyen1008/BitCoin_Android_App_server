@@ -2,7 +2,7 @@
 App::import('Controller', 'Users');
 
 class PortalController extends AppController{
-	
+	public $components = array('Session');
 	public function index()
 	{
 		
