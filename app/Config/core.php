@@ -55,6 +55,8 @@
 		'level' => E_ALL & ~E_DEPRECATED,
 		'trace' => true
 	));
+	
+	
 
 /**
  * Configure the Exception handler used for uncaught exceptions. By default,
@@ -189,10 +191,7 @@
  */
 	Configure::write('Session', array(
     'defaults' => 'php',
-        'ini' => array(
-            'session.gc_divisor' => 1000,
-            'session.cookie_httponly' => true
-        )
+    'cookie' => 'CAKE_MAIN',
     ));
 
 /**

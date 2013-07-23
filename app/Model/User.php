@@ -19,6 +19,8 @@ class User extends AppModel {
 	{
 		$this->create($userData);
 		$this->save($userData);
+		
+		return $this->getLastInsertID();
 	}
 	
 	public function loginSelect($data) {
