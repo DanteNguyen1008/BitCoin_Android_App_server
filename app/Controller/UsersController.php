@@ -193,29 +193,40 @@ class UsersController extends AppController {
 
 				$totalGot = 0;
 				//calculate win amount
+				$newBalance = $balance;
 				foreach ($betResult as $bet => $betAmout) {
 					foreach (GamePlayComponent::$arrBetRule as $betName => $ruleValue) {
 						if ($betName == $bet) {
 							if ($betName == 'single-1' || $betName == 'single-2' || $betName == 'single-3' || $betName == 'single-4' || $betName == 'single-5' || $betName == 'single-6') {
-								$balance += $betAmout;
+								$newBalance += $betAmout;
 								$winPattern = array_merge($winPattern, array($bet));
 							} else {
-								$balance += $betAmout + ($betAmout * $ruleValue);
+								$newBalance += $betAmout + ($betAmout * $ruleValue);
 								$winPattern = array_merge($winPattern, array($bet));
 							}
 
 						}
 					}
 				}
-
+				$totalWin = $newBalance - $balance;
+				$balance = $newBalance;
 				//Update balance to db
 				$result = $this -> User -> updateUserBalance($this -> Session -> read('login'), $balance);
 				//var_dump($betResult);
 				$response['data']['success'] = true;
+				$result = array();
+				$result['dice'] = $dices;
+				$result['win'] = $winPattern;
+				$result['point']['win'] = $totalWin;
+				$result['point']['current'] = $balance;
+				$response['data']['result'] = $result;
+				/*
 				$response['data']['result'] = $dices;
 				$response['data']['win'] = $winPattern;
 				$response['data']['point']['win'] = count($winPattern);
 				$response['data']['point']['current'] = $balance;
+				 * */
+				 
 				$status = true;
 			} else {
 				$message = 'bet error';
@@ -229,4 +240,14 @@ class UsersController extends AppController {
 		echo json_encode(array('response' => $response));
 	}
 
+	public function logout()
+	{
+		$this->Session->delete('login');
+		
+		$response = array();
+		$response['task_title'] = 'res_log_out';
+		$response['data']['message'] = 'Logout success';
+		$response['status'] = true;
+		echo json_encode(array('response' => $response));
+	}
 }
