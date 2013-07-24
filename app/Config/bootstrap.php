@@ -112,5 +112,5 @@ CakeLog::config('error', array(
 /**
  * Define CONSTANT
  */
-defined('IS_DEBUG') || define('IS_DEBUG', true);
+defined('IS_DEBUG') || define('IS_DEBUG', false);
 defined('BALANCE_INIT') || define('BALANCE_INIT', 0);
